@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:email="http://www.mulesoft.org/schema/mule/email" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="4be2e6aa-5987-482c-844a-6995efd35288" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="8cf2fe63-2faa-44f2-a08d-60b35b06403c" >
+		<email:smtp-connection host="smtp.gmail.com" port="587" user="surendrababuchowdam96@gmail.com" password="surendra@1234" >
+			<email:properties >
+				<email:property key="mail.smtp.startls.enable" value="true" />
+			</email:properties>
+		</email:smtp-connection>
+	</email:smtp-config>
+	<flow name="emailFlow" doc:id="85b6aebb-f9fd-494f-9c66-bfa582c6894f" >
+		<http:listener doc:name="Listener" doc:id="807625ba-76bb-435e-b4a1-29ef2ee53e9d" config-ref="HTTP_Listener_config" path="/mail"/>
+		<logger level="INFO" doc:name="Logger" doc:id="a83343fa-37b5-4bdb-b037-085eacee42ff" message="start"/>
+		<email:send doc:name="Send" doc:id="c6382f4c-7269-4051-8238-8afeecb0fdfb" fromAddress="reachtobabu1234@gmail.com" config-ref="Email_SMTP">
+			<email:to-addresses >
+				<email:to-address value="chowdambabu@gmail.com" />
+			</email:to-addresses>
+		</email:send>
+	</flow>
+</mule>
