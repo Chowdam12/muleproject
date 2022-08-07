@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="2d09c735-84e9-489e-8cf1-02adbc10975b" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<vm:config name="VM_Config" doc:name="VM Config" doc:id="2606cb2f-7344-4c12-8c02-2b82a9c23d9d" >
+		<vm:queues >
+			<vm:queue queueName="myq" />
+		</vm:queues>
+	</vm:config>
+	<flow name="vmconnectorFlow" doc:id="8d2bdc91-c63e-435b-9a61-488d5f9ec884" >
+		<http:listener doc:name="Listener" doc:id="00426e41-c901-48d8-b35b-998b5dbcb735" config-ref="HTTP_Listener_config" path="/connector"/>
+		<vm:publish queueName="myq" doc:id="85332c00-160c-4747-a70f-7617b6eabc9c" config-ref="VM_Config"/>
+	</flow>
+	<flow name="vmconnectorFlow2" doc:id="616ff0a9-18ee-4034-b9de-9139aad2e788" >
+		<http:listener doc:name="Listener" doc:id="975848d5-d09e-45c7-a654-225105439c44" config-ref="HTTP_Listener_config" path="consume"/>
+		<vm:consume queueName="myq" doc:name="Consume" doc:id="7e6ab1b1-46d4-4742-9f66-c24287885baa" config-ref="VM_Config"/>
+		<logger level="INFO" doc:name="Logger" doc:id="0acc5493-adb4-481e-806d-3c6411da2bb3" message="#[payload]"/>
+	</flow>
+	<flow name="vmconnectorFlow3" doc:id="e41117c8-e783-4e3b-bf09-cb3ab0d6244c" >
+		<http:listener doc:name="Listener" doc:id="8e2f3f94-0eed-440a-ade9-d84407e82f8e" config-ref="HTTP_Listener_config" path="pc"/>
+		<vm:publish-consume queueName="myq" doc:name="Publish consume" doc:id="86c62f6b-c695-4c07-8206-879e8ffe4e33" config-ref="VM_Config"/>
+	</flow>
+	<flow name="vmconnectorFlow1" doc:id="501f06e0-acce-41c7-8920-ad1ec422c29f" initialState="stopped">
+		<vm:listener queueName="myq" doc:name="Listener" doc:id="f9657c62-83cf-4d20-a5ef-43471637984c" config-ref="VM_Config"/>
+		<logger level="INFO" doc:name="Logger" doc:id="67e5d209-0b0d-4b1d-89cb-51ba676657ad" message="#[payload]"/>
+	</flow>
+</mule>
